@@ -1,13 +1,1 @@
-const input = document.querySelector('input');
-const games = document.querySelectorAll('#games img');
-
-input.addEventListener('input', () => {
-  const searchTerm = input.value.toLowerCase();
-  games.forEach(game => {
-    if (game.alt.toLowerCase().includes(searchTerm)) {
-      game.style.display = 'block';
-    } else {
-      game.style.display = 'none';
-    }
-  });
-});
+const cards=[...document.querySelectorAll(".game-card")];const search=document.getElementById("search");const filters=[...document.querySelectorAll(".filter")];const count=document.getElementById("game-count");const empty=document.getElementById("empty");let category="All";function filterGames(){const q=search.value.trim().toLowerCase();let shown=0;cards.forEach(card=>{const match=card.dataset.title.toLowerCase().includes(q)&& (category==="All"||card.dataset.category===category);card.hidden=!match;if(match)shown++;});count.textContent=String(shown).padStart(2,"0")+" GAMES";empty.hidden=shown!==0;}search.addEventListener("input",filterGames);filters.forEach(btn=>btn.addEventListener("click",()=>{filters.forEach(b=>b.classList.toggle("active",b===btn));category=btn.dataset.category;filterGames();}));document.getElementById("year").textContent=new Date().getFullYear();const home=document.getElementById("home"),player=document.getElementById("player"),frame=document.getElementById("game-frame");const title=document.getElementById("player-title");function openGame(card){const url=new URL(card.getAttribute("href"),location.href);if(url.origin!==location.origin)return;title.textContent=card.dataset.title.toUpperCase();document.getElementById("player-label").textContent="NOW PLAYING · "+card.dataset.category.toUpperCase();frame.src=url.href;home.hidden=true;player.hidden=false;history.pushState({game:true},"","#play");window.scrollTo(0,0);}function closeGame(){frame.src="about:blank";player.hidden=true;home.hidden=false;if(location.hash==="#play")history.pushState({},"",location.pathname+location.search);window.scrollTo(0,0);}cards.forEach(card=>card.addEventListener("click",e=>{e.preventDefault();openGame(card);}));document.getElementById("back").addEventListener("click",closeGame);window.addEventListener("popstate",()=>{if(!player.hidden)closeGame();});document.getElementById("fullscreen").addEventListener("click",()=>{const el=frame;if(el.requestFullscreen)el.requestFullscreen();});
